@@ -1,0 +1,45 @@
+系统消息 --待定
+
+
+单聊:  to  user  # id 是后台生成给前端作为消息唯一标识
+{"sendUserId":"kebi","msg":"你好","code":1,"receiverUserId":"liu"}
+
+群聊:  需要带上 对应groupID
+{"code":2,"groupID":11,"msg":"大家好 我是 刘德华\n","sendUserId":"wang"}
+
+群聊动作:{"code":4,"userID":"wang","groupAction":"1",groupID:"10","sendTime":"2022-05-05 10:20:58"}
+
+消息code ：
+1. 私聊
+2. 群聊
+{"type":"heat-beat"}
+
+groupAction：
+0：退出聊天室
+1：加入当前聊天室
+
+
+
+消息状态 返回服务端（单聊 群聊不确定是否需要ACK） 只需将code 改为5 发到后台即可
+
+ ------------------------->
+新的单聊 (code =1)  ：{"sendUserId":"kebi","msg":"eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjEyYmFjMGQzLTcyOWEtNDZmNy1iMmRmLWU3ZTYxYjJiNDg2ZCJ9.DdspwupFg_P7tvIgwpwfrq5Rs1xFvkLOqf8qg1O8N_BHfz3EREhLBUyWua86tcU5L-VXITRHxirgUhlTaatQxQ36b670555d2f44b89451d6a30365596d","code":1,"receiverUserId":"liu"}
+
+新的群聊 (code =2)：{"code":2,"groupID":10,"groupName":"游戏直播间","msg":"大家好 我是 刘德华\n","sendUserId":"liu"}
+
+系统消息(code = 3)  {"待定"}
+
+加入/退出群聊室(code = 4)(groupAction =1 为加入 groupAction = 0 退出)：
+{"code":4,"sendUserId":"liu","groupAction":"1","groupID":"10"}
+
+消息状态返回 :(code =5) (在后台返回前端的数据中将code改为5即可) ：{"sendUserId":"kebi","msg":"你好","code":5,"receiverUserId":"liu","msgId":"4fc35e97baf8470898728b4dcae547c0"}
+
+心跳检查：{"type":"heat-beat"}  --->不带code 后台不会处理此类消息
+
+
+聊天图片：
+
+前端请求后台图片上传API chat（如：http://192.168.64.90:9090/chat/upload_images）
+
+后台会将对应的path数据通过webSocket 发到对应的用户上数据格式为  type =I 为图片 type=T 或不传默认字符串
+{"sendUserId":"kebi","type":"I","code":1,"receiverUserId":"liu","filePath":"C:\Users\wsh\Desktop\test\a.jpg"}
